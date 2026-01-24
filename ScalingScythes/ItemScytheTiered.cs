@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Vintagestory.API.Common;
-using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.GameContent;
-using Newtonsoft.Json.Linq;
 
 namespace ScalingScythes
 {
@@ -42,7 +40,6 @@ namespace ScalingScythes
                 int[] size = TierHarvestSizes[metal];
                 harvestWidth = size[0];
                 harvestDepth = size[1];
-                api.Logger.Warning($"[ScalingScythes] {Code?.Path}: Set harvest size to {harvestWidth}x{harvestDepth}");
             }
         }
 
@@ -52,8 +49,6 @@ namespace ScalingScythes
 
             IPlayer player = (byEntity as EntityPlayer)?.Player;
             if (player == null) return;
-
-            byEntity.World.Api.Logger.Error($"[ScalingScythes] OnHeldAttackStart - Starting harvest with {harvestWidth}x{harvestDepth}");
 
             byEntity.Attributes.SetBool("didBreakBlocks", false);
             byEntity.Attributes.SetBool("didPlayScytheSound", false);
@@ -101,8 +96,6 @@ namespace ScalingScythes
 
         private void HarvestArea(BlockSelection blockSel, IPlayer player, ItemSlot slot)
         {
-            api.World.Api.Logger.Error($"[ScalingScythes] HarvestArea called - {harvestWidth}x{harvestDepth}");
-
             BlockPos centerPos = blockSel.Position;
             int maxBlocks = harvestWidth * harvestDepth;
             int blocksHarvested = 0;
@@ -186,8 +179,6 @@ namespace ScalingScythes
                 // Damage the tool for each block
                 DamageItem(api.World, player.Entity, slot, 1);
             }
-
-            api.World.Api.Logger.Error($"[ScalingScythes] Harvested {blocksHarvested} blocks (max {maxBlocks})");
         }
 
         private bool CanHarvestBlock(Block block)
@@ -195,6 +186,9 @@ namespace ScalingScythes
             if (block == null || block.Code == null) return false;
 
             string blockPath = block.Code.Path;
+
+            // Don't harvest already-eaten grass (stubble)
+            if (blockPath.Contains("-eaten")) return false;
 
             // Check allowed prefixes
             bool hasAllowedPrefix = false;
