@@ -1,0 +1,74 @@
+[
+  {
+    "comment": "Replace vanilla scythe with custom tiered version",
+    "op": "add",
+    "path": "/class",
+    "value": "ItemScytheTiered",
+    "file": "game:itemtypes/tool/scythe.json",
+    "side": "universal"
+  },
+  {
+    "comment": "Create descriptionByType object if it doesn't exist",
+    "op": "add",
+    "path": "/descriptionByType",
+    "value": {},
+    "file": "game:itemtypes/tool/scythe.json",
+    "side": "universal"
+  },
+  {
+    "comment": "Add description to copper scythe",
+    "op": "add",
+    "path": "/descriptionByType/scythe-copper",
+    "value": "itemdesc-scythe-copper",
+    "file": "game:itemtypes/tool/scythe.json",
+    "side": "universal"
+  },
+  {
+    "comment": "Add description to tin-bronze scythe",
+    "op": "add",
+    "path": "/descriptionByType/scythe-tinbronze",
+    "value": "itemdesc-scythe-tinbronze",
+    "file": "game:itemtypes/tool/scythe.json",
+    "side": "universal"
+  },
+  {
+    "comment": "Add description to bismuth-bronze scythe",
+    "op": "add",
+    "path": "/descriptionByType/scythe-bismuthbronze",
+    "value": "itemdesc-scythe-bismuthbronze",
+    "file": "game:itemtypes/tool/scythe.json",
+    "side": "universal"
+  },
+  {
+    "comment": "Add description to black-bronze scythe",
+    "op": "add",
+    "path": "/descriptionByType/scythe-blackbronze",
+    "value": "itemdesc-scythe-blackbronze",
+    "file": "game:itemtypes/tool/scythe.json",
+    "side": "universal"
+  },
+  {
+    "comment": "Add description to iron scythe",
+    "op": "add",
+    "path": "/descriptionByType/scythe-iron",
+    "value": "itemdesc-scythe-iron",
+    "file": "game:itemtypes/tool/scythe.json",
+    "side": "universal"
+  },
+  {
+    "comment": "Add description to meteoric iron scythe",
+    "op": "add",
+    "path": "/descriptionByType/scythe-meteoriciron",
+    "value": "itemdesc-scythe-meteoriciron",
+    "file": "game:itemtypes/tool/scythe.json",
+    "side": "universal"
+  },
+  {
+    "comment": "Add description to steel scythe",
+    "op": "add",
+    "path": "/descriptionByType/scythe-steel",
+    "value": "itemdesc-scythe-steel",
+    "file": "game:itemtypes/tool/scythe.json",
+    "side": "universal"
+  }
+]

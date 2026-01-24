@@ -1,0 +1,17 @@
+{
+  "item-scythe-copper": "Faux en Cuivre",
+  "item-scythe-tinbronze": "Faux en Bronze d'Étain",
+  "item-scythe-bismuthbronze": "Faux en Bronze de Bismuth",
+  "item-scythe-blackbronze": "Faux en Bronze Noir",
+  "item-scythe-iron": "Faux en Fer",
+  "item-scythe-meteoriciron": "Faux en Fer Météorique",
+  "item-scythe-steel": "Faux en Acier",
+  
+  "itemdesc-scythe-copper": "Récolte les cultures et l'herbe dans une zone de 3x2 (6 blocs)",
+  "itemdesc-scythe-tinbronze": "Récolte les cultures et l'herbe dans une zone de 3x3 (9 blocs)",
+  "itemdesc-scythe-bismuthbronze": "Récolte les cultures et l'herbe dans une zone de 3x4 (12 blocs)",
+  "itemdesc-scythe-blackbronze": "Récolte les cultures et l'herbe dans une zone de 3x5 (15 blocs)",
+  "itemdesc-scythe-iron": "Récolte les cultures et l'herbe dans une zone de 4x4 (16 blocs)",
+  "itemdesc-scythe-meteoriciron": "Récolte les cultures et l'herbe dans une zone de 4x5 (20 blocs)",
+  "itemdesc-scythe-steel": "Récolte les cultures et l'herbe dans une zone de 5x5 (25 blocs)"
+}

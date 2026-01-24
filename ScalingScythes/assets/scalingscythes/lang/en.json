@@ -1,0 +1,17 @@
+{
+  "item-scythe-copper": "Copper Scythe",
+  "item-scythe-tinbronze": "Tin Bronze Scythe",
+  "item-scythe-bismuthbronze": "Bismuth Bronze Scythe",
+  "item-scythe-blackbronze": "Black Bronze Scythe",
+  "item-scythe-iron": "Iron Scythe",
+  "item-scythe-meteoriciron": "Meteoric Iron Scythe",
+  "item-scythe-steel": "Steel Scythe",
+  
+  "itemdesc-scythe-copper": "Harvests crops and grass in a 3x2 area (6 blocks)",
+  "itemdesc-scythe-tinbronze": "Harvests crops and grass in a 3x3 area (9 blocks)",
+  "itemdesc-scythe-bismuthbronze": "Harvests crops and grass in a 3x4 area (12 blocks)",
+  "itemdesc-scythe-blackbronze": "Harvests crops and grass in a 3x5 area (15 blocks)",
+  "itemdesc-scythe-iron": "Harvests crops and grass in a 4x4 area (16 blocks)",
+  "itemdesc-scythe-meteoriciron": "Harvests crops and grass in a 4x5 area (20 blocks)",
+  "itemdesc-scythe-steel": "Harvests crops and grass in a 5x5 area (25 blocks)"
+}

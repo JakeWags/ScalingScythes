@@ -1,0 +1,17 @@
+{
+  "item-scythe-copper": "Guadaña de Cobre",
+  "item-scythe-tinbronze": "Guadaña de Bronce de Estaño",
+  "item-scythe-bismuthbronze": "Guadaña de Bronce de Bismuto",
+  "item-scythe-blackbronze": "Guadaña de Bronce Negro",
+  "item-scythe-iron": "Guadaña de Hierro",
+  "item-scythe-meteoriciron": "Guadaña de Hierro Meteórico",
+  "item-scythe-steel": "Guadaña de Acero",
+  
+  "itemdesc-scythe-copper": "Cosecha cultivos y hierba en un área de 3x2 (6 bloques)",
+  "itemdesc-scythe-tinbronze": "Cosecha cultivos y hierba en un área de 3x3 (9 bloques)",
+  "itemdesc-scythe-bismuthbronze": "Cosecha cultivos y hierba en un área de 3x4 (12 bloques)",
+  "itemdesc-scythe-blackbronze": "Cosecha cultivos y hierba en un área de 3x5 (15 bloques)",
+  "itemdesc-scythe-iron": "Cosecha cultivos y hierba en un área de 4x4 (16 bloques)",
+  "itemdesc-scythe-meteoriciron": "Cosecha cultivos y hierba en un área de 4x5 (20 bloques)",
+  "itemdesc-scythe-steel": "Cosecha cultivos y hierba en un área de 5x5 (25 bloques)"
+}

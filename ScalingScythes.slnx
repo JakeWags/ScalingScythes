@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ScalingScythes/ScalingScythes.csproj" />
+  <Project Path="ZZCakeBuild/CakeBuild.csproj" />
+</Solution>
