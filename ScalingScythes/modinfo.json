@@ -4,7 +4,7 @@
   "name": "Scaling Scythes",
   "authors": ["GrompGilberton"],
   "description": "Makes higher tier scythes harvest more blocks at once. Copper scythes harvest the vanilla 6 blocks (3x2), while higher tiers progressively harvest larger areas up to steel at 25 blocks (5x5).",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "dependencies": {},
   "side": "universal",
   "requiredOnClient": true,

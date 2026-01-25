@@ -25,10 +25,10 @@ namespace ScalingScythes
             }
         }
 
-        // Patch performActions to use custom search area
+        // Use Postfix to perform additional harvesting after vanilla logic completes
         [HarmonyPatch("performActions")]
-        [HarmonyPrefix]
-        public static bool PerformActions_Prefix(
+        [HarmonyPostfix]
+        public static void PerformActions_Postfix(
             ItemScythe __instance,
             float secondsPassed,
             EntityAgent byEntity,
@@ -37,58 +37,60 @@ namespace ScalingScythes
         {
             string metal = GetMaterialVariant(__instance);
 
-            // Let vanilla handle copper
-            if (string.IsNullOrEmpty(metal) || metal == "copper")
-            {
-                return true;
-            }
+            // Only do extra harvesting for upgraded tiers
+            if (string.IsNullOrEmpty(metal) || metal == "copper") return;
 
-            // Custom implementation for upgraded tiers
-            if (blockSelection == null) return false;
+            if (blockSelection == null) return;
 
             EntityPlayer entityPlayer = byEntity as EntityPlayer;
             IPlayer player = entityPlayer?.Player;
-            if (player == null) return false;
+            if (player == null) return;
 
-            // Check if enough time has passed and we haven't broken blocks yet
+            // Reset flag when animation cycle restarts
+            if (secondsPassed < 0.1f)
+            {
+                byEntity.Attributes.RemoveAttribute("didExtendedHarvest");
+                return;
+            }
+
+            // Check if vanilla just finished breaking blocks
+            if (!byEntity.Attributes.GetBool("didBreakBlocks", false)) return;
+
+            // Check if we already did our extended harvest this cycle
+            if (byEntity.Attributes.GetBool("didExtendedHarvest", false)) return;
+
             bool harvestable = __instance.CanMultiBreak(byEntity.World.BlockAccessor.GetBlock(blockSelection.Position));
 
-            if (harvestable && secondsPassed > 0.75f && !byEntity.Attributes.GetBool("didPlayScytheSound", false))
+            if (harvestable && byEntity.World.Side == EnumAppSide.Server)
             {
-                byEntity.World.PlaySoundAt(new AssetLocation("sounds/tool/scythe1"), byEntity, player, true, 16f, 1f);
-                byEntity.Attributes.SetBool("didPlayScytheSound", true);
+                // Perform additional harvesting beyond vanilla's 3x2 area
+                HarvestExtendedArea(__instance, blockSelection.Position, player, slot, metal);
+                byEntity.Attributes.SetBool("didExtendedHarvest", true);
             }
-
-            if (harvestable && secondsPassed > 1.05f && !byEntity.Attributes.GetBool("didBreakBlocks", false))
-            {
-                if (byEntity.World.Side == EnumAppSide.Server && byEntity.World.Claims.TryAccess(player, blockSelection.Position, EnumBlockAccessFlags.BuildOrBreak))
-                {
-                    HarvestCustomArea(__instance, blockSelection.Position, player, slot, metal);
-                }
-                byEntity.Attributes.SetBool("didBreakBlocks", true);
-            }
-
-            return false; // Skip original method
         }
 
-        private static void HarvestCustomArea(ItemScythe scythe, BlockPos centerPos, IPlayer player, ItemSlot slot, string metal)
+        private static void HarvestExtendedArea(ItemScythe scythe, BlockPos centerPos, IPlayer player, ItemSlot slot, string metal)
         {
             int[] dimensions = GetSearchDimensions(metal);
             int maxBlocks = GetTierBlocks(metal);
 
-            // Collect harvestable blocks
+            // Collect harvestable blocks in extended area
             List<BlockPos> harvestableBlocks = new List<BlockPos>();
             Vec3d centerVec = centerPos.ToVec3d().Add(0.5, 0.5, 0.5);
 
             int rangeX = dimensions[0] / 2;
             int rangeZ = dimensions[1] / 2;
 
+            // Search the full area
             for (int dx = -rangeX; dx <= rangeX; dx++)
             {
                 for (int dy = -1; dy <= 1; dy++)
                 {
                     for (int dz = -rangeZ; dz <= rangeZ; dz++)
                     {
+                        // Skip vanilla's 3x2 area (already harvested)
+                        if (dx >= -1 && dx <= 1 && dz >= -1 && dz <= 0) continue;
+
                         BlockPos pos = centerPos.AddCopy(dx, dy, dz);
                         Block block = player.Entity.World.BlockAccessor.GetBlock(pos);
 
@@ -108,53 +110,38 @@ namespace ScalingScythes
                 return distA.CompareTo(distB);
             });
 
-            // Harvest up to maxBlocks
+            // Calculate how many blocks vanilla already harvested (roughly 5 for copper)
+            int vanillaHarvested = 5;
+            int additionalBlocks = maxBlocks - vanillaHarvested;
+
+            // Harvest additional blocks beyond vanilla's limit
             int harvested = 0;
             foreach (BlockPos pos in harvestableBlocks)
             {
-                if (harvested >= maxBlocks) break;
+                if (harvested >= additionalBlocks) break;
+
                 if (player.Entity.World.Claims.TryAccess(player, pos, EnumBlockAccessFlags.BuildOrBreak))
                 {
-                    Block block = player.Entity.World.BlockAccessor.GetBlock(pos);
+                    // Use vanilla's breakMultiBlock method - this handles grass stubble, 
+                    // drop spawning, and everything else the same way vanilla does
+                    var breakMethod = typeof(ItemScythe).GetMethod("breakMultiBlock",
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-                    // Handle grass specially - leave stubble
-                    if (block.Code.Path.StartsWith("tallgrass-"))
+                    if (breakMethod != null)
                     {
-                        // Try to get the "eaten" variant (stubble)
-                        Block trimmedBlock = player.Entity.World.GetBlock(block.CodeWithVariant("tallgrass", "eaten"));
-
-                        if (trimmedBlock != null && trimmedBlock != block)
-                        {
-                            // Give drops to player
-                            block.OnBlockBroken(player.Entity.World, pos, player);
-
-                            // Place stubble (don't call BreakBlock again, just replace)
-                            player.Entity.World.BlockAccessor.SetBlock(trimmedBlock.BlockId, pos);
-
-                            // Make it temporary so it grows back
-                            BlockEntityTransient be = player.Entity.World.BlockAccessor.GetBlockEntity(pos) as BlockEntityTransient;
-                            if (be != null)
-                            {
-                                be.ConvertToOverride = block.Code.ToShortString();
-                            }
-                        }
-                        else
-                        {
-                            // No eaten variant, just break normally
-                            player.Entity.World.BlockAccessor.BreakBlock(pos, player, 1f);
-                        }
+                        breakMethod.Invoke(scythe, new object[] { pos, player });
                     }
                     else
                     {
-                        // For crops and other harvestables, break normally
+                        // Fallback if reflection fails
                         player.Entity.World.BlockAccessor.BreakBlock(pos, player, 1f);
+                        player.Entity.World.BlockAccessor.MarkBlockDirty(pos);
                     }
 
-                    player.Entity.World.BlockAccessor.MarkBlockDirty(pos);
                     scythe.DamageItem(player.Entity.World, player.Entity, slot, 1);
                     harvested++;
 
-                    if (slot.Itemstack == null) break; // Tool broke
+                    if (slot.Itemstack == null) break;
                 }
             }
         }
@@ -171,7 +158,7 @@ namespace ScalingScythes
         {
             return metal switch
             {
-                "copper" => 5,        // Vanilla is actually 5, not 6!
+                "copper" => 5,
                 "tinbronze" => 9,
                 "bismuthbronze" => 12,
                 "blackbronze" => 15,
