@@ -1,13 +1,5 @@
 [
   {
-    "comment": "Replace vanilla scythe with custom tiered version",
-    "op": "add",
-    "path": "/class",
-    "value": "ItemScytheTiered",
-    "file": "game:itemtypes/tool/scythe.json",
-    "side": "universal"
-  },
-  {
     "comment": "Create descriptionByType object if it doesn't exist",
     "op": "add",
     "path": "/descriptionByType",
